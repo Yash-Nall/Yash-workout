@@ -1,0 +1,10 @@
+numpy
+pandas>=2.0.0
+matplotlib
+seaborn
+scikit-learn
+streamlit>=1.31.0
+requests>=2.28.0
+fatsecret-platform
+textblob
+nltk
