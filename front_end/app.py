@@ -130,7 +130,8 @@ with tab1:
 with tab2:
     st.header("Calorie Chatbot")
     st.caption(
-        
+        "Optional API keys in `.streamlit/secrets.toml`: **GROQ_API_KEY** (free at groq.com, recommended) "
+        "or **OPENAI_API_KEY**. Without keys you still get expanded offline answers."
     )
     if "nutrition_chat" not in st.session_state:
         st.session_state.nutrition_chat = []
@@ -156,7 +157,8 @@ with tab2:
 with tab3:
     st.header("Nutrition Calculator")
     st.caption(
-        
+        "Data from **Open Food Facts** (community-sourced). Results are ranked so names closer to "
+        "your search appear first. Optional: valid **FATSECRET_KEY** / **FATSECRET_SECRET** if OFF is empty."
     )
 
     food_query = st.text_input("Enter a food name to search:", key="food_query")
