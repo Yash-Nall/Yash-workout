@@ -156,7 +156,7 @@ with tab2:
 with tab3:
     st.header("Nutrition Calculator")
     st.caption(
-        "Data from **Open Food Facts**
+        
     )
 
     food_query = st.text_input("Enter a food name to search:", key="food_query")
