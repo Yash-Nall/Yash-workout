@@ -31,6 +31,13 @@ from analyses.nutrition_search import search_foods
 
 st.title("Personal Health Assistant")
 
+st.subheader("Get a Personalized Plan")
+
+st.link_button(
+    "Start Fitness Survey 🚀",
+    "https://docs.google.com/forms/d/e/1FAIpQLSdtK96V0z11r_DRwxdEqCclLHmwz6jk7ndTa193uyXBYyJQ8g/viewform?usp=sharing&ouid=118083238042336260263"
+)
+
 tab1, tab2, tab3, tab4 = st.tabs(
     ["Workout Finder", "Calorie Chatbot", "Nutrition Calculator", "Personal Tracker"]
 )
