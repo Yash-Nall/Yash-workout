@@ -4,9 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import streamlit as st
 import pandas as pd
-
-
-
+import bcrypt
 
 # Add the parent directory to sys.path manually
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -16,19 +14,87 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 csv_path = os.path.join(BASE_DIR, "../data/processed/exercises_cleaned.csv")
 progress_file = os.path.join(BASE_DIR, "../data/user/progress.csv")
+users_file = os.path.join(BASE_DIR, "../data/user/users.csv")
+
 os.makedirs(os.path.dirname(progress_file), exist_ok=True)
+
 if not os.path.isfile(progress_file):
     pd.DataFrame(columns=["date", "weight", "steps", "sleep_time"]).to_csv(
         progress_file, index=False
     )
+
+if not os.path.isfile(users_file):
+    pd.DataFrame(columns=["email", "password"]).to_csv(users_file, index=False)
+
 df = pd.read_csv(csv_path)
-
-
 df["Burns Calories"] = pd.to_numeric(df["Burns Calories"], errors="coerce")
+
+# ===================== AUTH SYSTEM (ADDED ONLY) =====================
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+def check_password(password: str, hashed: str) -> bool:
+    return bcrypt.checkpw(password.encode(), hashed.encode())
+
+def load_users():
+    return pd.read_csv(users_file)
+
+def save_user(email, password):
+    users = load_users()
+    if email in users["email"].values:
+        return False
+    users.loc[len(users)] = [email, hash_password(password)]
+    users.to_csv(users_file, index=False)
+    return True
+
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+    st.session_state.user = None
 
 from analyses.filter_data import filter_data
 from analyses.nutrition_chat import chat_with_history
 from analyses.nutrition_search import search_foods
+
+# ===================== LOGIN / SIGNUP SCREEN =====================
+if not st.session_state.authenticated:
+    st.title("Login / Signup")
+
+    tab_login, tab_signup = st.tabs(["Login", "Sign Up"])
+
+    with tab_login:
+        email = st.text_input("Email", key="login_email")
+        password = st.text_input("Password", type="password", key="login_pw")
+
+        if st.button("Login"):
+            users = load_users()
+            match = users[users["email"] == email]
+
+            if not match.empty and check_password(password, match.iloc[0]["password"]):
+                st.session_state.authenticated = True
+                st.session_state.user = email
+                st.rerun()
+            else:
+                st.error("Invalid email or password")
+
+    with tab_signup:
+        new_email = st.text_input("Email", key="signup_email")
+        new_password = st.text_input("Password", type="password", key="signup_pw")
+
+        if st.button("Create Account"):
+            if save_user(new_email, new_password):
+                st.success("Account created. Please log in.")
+            else:
+                st.error("Email already exists")
+
+    st.stop()
+
+# ===================== LOGGED IN APP =====================
+st.sidebar.write(f"Logged in as: {st.session_state.user}")
+
+if st.sidebar.button("Logout"):
+    st.session_state.authenticated = False
+    st.session_state.user = None
+    st.rerun()
 
 st.title("Personal Health Assistant")
 
@@ -288,7 +354,6 @@ with tab3:
 
 with tab4:
     st.header("Personal Tracker")
-    # — New Entry Form —
     with st.form("progress_form"):
         date = st.date_input("Date", value=datetime.date.today())
         weight = st.number_input("Weight (lbs)", min_value=0.0, step=0.1)
@@ -297,24 +362,19 @@ with tab4:
         submitted = st.form_submit_button("Add Entry")
 
     if submitted:
-        # Load existing entries
         df_progress = pd.read_csv(progress_file)
-        # Check for duplicate date
         existing_dates = set(df_progress["date"])
         if date.isoformat() in existing_dates:
             st.warning(f"You already entered data for {date.strftime('%m/%d/%Y')}.")
         else:
-            # Append new entry
             df_progress.loc[len(df_progress)] = [date.isoformat(), weight, steps, sleep_time]
             df_progress.to_csv(progress_file, index=False)
             st.success("Entry added!")
 
-     # ─ load and prepare data ─────────────────────────────────────────────────
     df_progress = pd.read_csv(progress_file)
     df_progress["date"] = pd.to_datetime(df_progress["date"])
     df_progress = df_progress.sort_values("date").reset_index(drop=True)
 
-     # — Prepare Display DataFrame —
     display_df = pd.DataFrame({
         "Date": df_progress["date"].dt.strftime("%m/%d/%Y"),
         "Weight (lbs)": df_progress["weight"],
@@ -325,9 +385,7 @@ with tab4:
     st.subheader("Progress Data")
     st.dataframe(display_df, use_container_width=True)
 
-    # — Inline Deletion Controls —
     st.markdown("**Select rows to delete:**")
-    # Build options by zipping the two series
     options = [
         f"{d} — {w} lbs"
         for d, w, s, t in zip(display_df["Date"], display_df["Weight (lbs)"], display_df["Steps"], display_df["Sleep Duration"])
@@ -335,28 +393,14 @@ with tab4:
     to_delete = st.multiselect("Entries to remove", options)
 
     if st.button("Delete Selected") and to_delete:
-        # Construct a boolean mask: keep rows whose label is NOT in to_delete
         keep_mask = [
             f"{d} — {w} lbs" not in to_delete
             for d, w in zip(display_df["Date"], display_df["Weight (lbs)"])
         ]
-        # Apply mask to original df_progress
         df_progress = df_progress[keep_mask].reset_index(drop=True)
         df_progress.to_csv(progress_file, index=False)
-        st.success(f"Deleted {len(to_delete)} entr{'y' if len(to_delete)==1 else 'ies'}.")
+        st.success(f"Deleted {len(to_delete)} entries.")
 
-        # Reload and re-display
-        df_progress["date"] = pd.to_datetime(df_progress["date"])
-        df_progress = df_progress.sort_values("date").reset_index(drop=True)
-        display_df = pd.DataFrame({
-            "Date": df_progress["date"].dt.strftime("%m/%d/%Y"),
-            "Weight (lbs)": df_progress["weight"],
-            "Steps": df_progress["steps"],
-            "Sleep Duration": df_progress["sleep_time"]
-        })
-        st.dataframe(display_df, use_container_width=True)
-
-    # — Plot Weight Over Time —
     fig, ax = plt.subplots()
     dates = df_progress["date"]
     weights = df_progress["weight"]
@@ -366,14 +410,9 @@ with tab4:
     ax.set_ylabel("Weight (lbs)")
     ax.set_title("Weight Over Time")
 
-    # 1 day margin on each end
     ax.margins(x=0.05)
-
-    # Tick exactly at each date
     ax.set_xticks(dates)
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d/%Y"))
 
-    # Rotate for readability
     fig.autofmt_xdate()
-
     st.pyplot(fig)
