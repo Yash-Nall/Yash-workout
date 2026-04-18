@@ -826,8 +826,26 @@ hr {
 [data-testid="stVerticalBlock"] > div:nth-child(5) { animation: fadeUp 0.5s 0.25s var(--ease-out) both; }
 [data-testid="stVerticalBlock"] > div:nth-child(6) { animation: fadeUp 0.5s 0.30s var(--ease-out) both; }
 
+/* ─── INLINE LOGOUT BUTTON ───────────────────────────────────────────────── */
+/* Make the inline logout button small and subtle */
+[data-testid="stButton"][key="inline_logout"] > button,
+div:has(> button[kind="secondary"]) > button {
+  padding: 6px 14px !important;
+  font-size: 0.76rem !important;
+  width: auto !important;
+  color: #ff8585 !important;
+  -webkit-text-fill-color: #ff8585 !important;
+  border-color: rgba(255,107,107,0.22) !important;
+  float: right !important;
+}
+
 /* ─── MOBILE — TABLET (≤768px) ────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  /* Hide sidebar and its toggle arrow completely on mobile */
+  [data-testid="stSidebar"] { display: none !important; }
+  [data-testid="stSidebarCollapsedControl"],
+  [data-testid="collapsedControl"],
+  button[kind="header"] { display: none !important; }
   /* Layout */
   .main .block-container {
     padding: 1rem 0.75rem !important;
@@ -854,11 +872,18 @@ hr {
     white-space: nowrap !important;
   }
 
-  /* Buttons — full width on mobile */
+  /* Buttons — full width on mobile, EXCEPT the inline logout */
   .stButton > button {
     width: 100% !important;
     padding: 11px 14px !important;
     font-size: 0.85rem !important;
+  }
+  /* Keep logout button compact */
+  .stButton:has(button:contains("Logout")) > button,
+  [data-testid="stButton"]:last-of-type > button {
+    width: auto !important;
+    padding: 6px 12px !important;
+    font-size: 0.76rem !important;
   }
   .stFormSubmitButton > button {
     width: 100% !important;
@@ -1049,6 +1074,7 @@ if not st.session_state.authenticated:
     st.stop()
 
 # ===================== LOGGED IN APP =====================
+# Keep sidebar for desktop but also show inline account bar for mobile
 st.sidebar.markdown("### 👤 Account")
 st.sidebar.write(f"**{st.session_state.user}**")
 if st.sidebar.button("🚪 Logout"):
@@ -1056,7 +1082,22 @@ if st.sidebar.button("🚪 Logout"):
     st.session_state.user = None
     st.rerun()
 
-st.title("FitCore")
+# Inline top bar — visible on all sizes, replaces sidebar on mobile
+col_title, col_user = st.columns([5, 1])
+with col_title:
+    st.title("FitCore")
+with col_user:
+    st.markdown(
+        f"<div style='text-align:right;padding-top:18px;font-size:0.78rem;"
+        f"color:#8fb4d8;font-family:DM Sans,sans-serif;'>"
+        f"👤 {st.session_state.user}</div>",
+        unsafe_allow_html=True
+    )
+    if st.button("Logout", key="inline_logout"):
+        st.session_state.authenticated = False
+        st.session_state.user = None
+        st.rerun()
+
 st.markdown("##### Build your best self — track, discover, and optimize.")
 st.link_button("Start Fitness Survey 🚀", "https://docs.google.com/forms/d/e/1FAIpQLSdtK96V0z11r_DRwxdEqCclLHmwz6jk7ndTa193uyXBYyJQ8g/viewform?usp=sharing&ouid=118083238042336260263")
 
