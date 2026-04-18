@@ -826,24 +826,152 @@ hr {
 [data-testid="stVerticalBlock"] > div:nth-child(5) { animation: fadeUp 0.5s 0.25s var(--ease-out) both; }
 [data-testid="stVerticalBlock"] > div:nth-child(6) { animation: fadeUp 0.5s 0.30s var(--ease-out) both; }
 
-/* ─── MOBILE ──────────────────────────────────────────────────────────────── */
+/* ─── MOBILE — TABLET (≤768px) ────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .main .block-container { padding: 1rem 0.85rem !important; }
-  h1, .stMarkdown h1 { font-size: 2.1rem !important; }
+  /* Layout */
+  .main .block-container {
+    padding: 1rem 0.75rem !important;
+    max-width: 100% !important;
+  }
 
-  .stTabs [data-baseweb="tab"] { padding: 8px 12px !important; font-size: 0.78rem !important; }
-  .stTabs [data-baseweb="tab-list"] { gap: 2px !important; padding: 5px !important; }
+  /* Typography */
+  h1, .stMarkdown h1 { font-size: 2rem !important; }
+  h2, .stMarkdown h2 { font-size: 1.3rem !important; }
+  h3, .stMarkdown h3 { font-size: 1rem !important; }
+  p, li, span { font-size: 0.9rem !important; line-height: 1.6 !important; }
 
-  .stButton > button { padding: 10px 16px !important; width: 100% !important; }
-  [data-testid="stForm"] { padding: 18px 14px !important; }
-  .stChatMessage { padding: 12px 14px !important; margin-left: 0 !important; margin-right: 0 !important; }
-  [data-testid="column"] { padding: 0 4px !important; }
+  /* Tabs — show emoji only on very small, keep text on tablet */
+  .stTabs [data-baseweb="tab-list"] {
+    gap: 2px !important;
+    padding: 5px !important;
+    flex-wrap: wrap !important;
+  }
+  .stTabs [data-baseweb="tab"] {
+    padding: 8px 10px !important;
+    font-size: 0.76rem !important;
+    flex: 1 1 auto !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  /* Buttons — full width on mobile */
+  .stButton > button {
+    width: 100% !important;
+    padding: 11px 14px !important;
+    font-size: 0.85rem !important;
+  }
+  .stFormSubmitButton > button {
+    width: 100% !important;
+  }
+  .stLinkButton > a {
+    display: block !important;
+    text-align: center !important;
+    padding: 12px 20px !important;
+    font-size: 0.88rem !important;
+    animation: none !important; /* disable float on mobile */
+  }
+
+  /* Forms */
+  [data-testid="stForm"] {
+    padding: 16px 12px !important;
+  }
+
+  /* Columns — stack on mobile */
+  [data-testid="column"] {
+    padding: 0 2px !important;
+    min-width: 0 !important;
+  }
+
+  /* Chat bubbles — remove side indents on mobile so text has room */
+  .stChatMessage {
+    padding: 12px 14px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: var(--radius-md) !important;
+  }
+  [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
+    margin-left: 0 !important;
+  }
+  [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarAssistant"]) {
+    margin-right: 0 !important;
+  }
+
+  /* Inputs */
+  .stTextInput > div > div > input,
+  .stNumberInput > div > div > input,
+  .stTextArea textarea {
+    font-size: 0.88rem !important;
+    padding: 10px 12px !important;
+  }
+
+  /* Dataframe */
+  .stDataFrame { font-size: 0.76rem !important; }
+
+  /* Metrics */
+  [data-testid="stMetricValue"] { font-size: 1.6rem !important; }
+
+  /* Sidebar */
+  [data-testid="stSidebar"] { width: 240px !important; }
+
+  /* Chart */
+  [data-testid="stImage"], .stPlotlyChart {
+    border-radius: var(--radius-md) !important;
+  }
+
+  /* Multiselect tags wrap nicely */
+  [data-baseweb="tag"] {
+    font-size: 0.75rem !important;
+    padding: 3px 8px !important;
+  }
 }
 
+/* ─── MOBILE — PHONE (≤480px) ─────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  h1, .stMarkdown h1 { font-size: 1.75rem !important; }
-  h2, .stMarkdown h2 { font-size: 1.25rem !important; }
-  .stTabs [data-baseweb="tab"] { padding: 7px 9px !important; font-size: 0.72rem !important; }
+  .main .block-container { padding: 0.75rem 0.5rem !important; }
+
+  h1, .stMarkdown h1 { font-size: 1.65rem !important; }
+  h2, .stMarkdown h2 { font-size: 1.15rem !important; }
+  h3, .stMarkdown h3 { font-size: 0.95rem !important; }
+
+  /* Tabs — emoji only, hide text */
+  .stTabs [data-baseweb="tab"] {
+    padding: 8px 8px !important;
+    font-size: 0 !important;      /* hide text */
+    line-height: 0 !important;
+  }
+  /* Keep emoji visible by targeting first character */
+  .stTabs [data-baseweb="tab"]::first-letter {
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Sliders — full width */
+  .stSlider { padding: 0 !important; }
+
+  /* Number inputs stack controls */
+  .stNumberInput > div { flex-wrap: wrap !important; gap: 4px !important; }
+  .stNumberInput > div > div { flex: 1 1 100% !important; }
+
+  /* Chat input */
+  .stChatInput > div { border-radius: var(--radius-md) !important; }
+
+  /* Forms tighter */
+  [data-testid="stForm"] { padding: 12px 10px !important; border-radius: var(--radius-md) !important; }
+
+  /* Reduce animation delays on mobile for snappiness */
+  [data-testid="stVerticalBlock"] > div:nth-child(n) {
+    animation-delay: 0.03s !important;
+  }
+
+  /* Pagination buttons side by side */
+  [data-testid="column"] [data-testid="stButton"] > button {
+    padding: 8px 10px !important;
+    font-size: 0.78rem !important;
+  }
+
+  /* Metric cards */
+  [data-testid="stMetricValue"] { font-size: 1.4rem !important; }
+  [data-testid="stMetricLabel"] { font-size: 0.65rem !important; }
 }
 
 /* ─── MISC ────────────────────────────────────────────────────────────────── */
@@ -951,11 +1079,8 @@ with tab1:
         "Legs", "Upper Chest", "Lower Chest",
     ])
 
-    col_a, col_b = st.columns(2)
-    with col_a:
-        calories_min = st.slider("Min calories burned", 10, 1000, 100)
-    with col_b:
-        calories_max = st.slider("Max calories burned", 10, 1000, 1000)
+    calories_min = st.slider("Min calories burned", 10, 1000, 100)
+    calories_max = st.slider("Max calories burned", 10, 1000, 1000)
 
     difficulty = st.multiselect(
         "Difficulty Level(s)", ["Beginner", "Intermediate", "Advanced"],
@@ -1135,13 +1260,9 @@ with tab4:
 
     with st.form("progress_form"):
         date = st.date_input("Date", value=datetime.date.today())
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            weight = st.number_input("Weight (lbs)", min_value=0.0, step=0.1)
-        with col2:
-            steps = st.number_input("Steps", min_value=0, step=10)
-        with col3:
-            sleep_time = st.number_input("Sleep (hrs)", min_value=0.0, step=0.5)
+        weight = st.number_input("Weight (lbs)", min_value=0.0, step=0.1)
+        steps = st.number_input("Steps", min_value=0, step=10)
+        sleep_time = st.number_input("Sleep (hrs)", min_value=0.0, step=0.5)
         submitted = st.form_submit_button("➕ Add Entry")
 
     if submitted:
