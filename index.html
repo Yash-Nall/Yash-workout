@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FitCore — Your Free Fitness Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #ff375f;
+    --red2: #ff526e;
+    --bg: #000000;
+    --bg1: #0f0f0f;
+    --bg2: #1a1a1a;
+    --bg3: #242424;
+    --bd: rgba(255,255,255,0.07);
+    --bd2: rgba(255,255,255,0.13);
+    --txt: #ffffff;
+    --txt2: rgba(255,255,255,0.62);
+    --txt3: rgba(255,255,255,0.38);
+    --font: 'Inter', -apple-system, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--txt);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    height: 64px;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--bd);
+  }
+  .nav-logo {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--txt);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-logo span { color: var(--red); }
+  .nav-links { display: flex; align-items: center; gap: 28px; }
+  .nav-links a {
+    color: var(--txt3);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: color 0.16s;
+  }
+  .nav-links a:hover { color: var(--txt); }
+  .nav-cta {
+    background: var(--red) !important;
+    color: #fff !important;
+    padding: 8px 18px !important;
+    border-radius: 99px !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    transition: background 0.16s, transform 0.12s !important;
+  }
+  .nav-cta:hover { background: var(--red2) !important; transform: scale(1.03) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 5% 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,55,95,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,55,95,0.1);
+    border: 1px solid rgba(255,55,95,0.25);
+    border-radius: 99px;
+    padding: 6px 16px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--red);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s 0.1s both;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse 1.8s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  h1 {
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.2s both;
+  }
+  h1 em { color: var(--red); font-style: normal; }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.22rem);
+    color: var(--txt2);
+    max-width: 580px;
+    line-height: 1.65;
+    margin-bottom: 44px;
+    animation: fadeUp 0.6s 0.3s both;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.6s 0.4s both;
+    margin-bottom: 72px;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: #fff;
+    padding: 15px 32px;
+    border-radius: 99px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.16s, transform 0.12s, box-shadow 0.16s;
+    box-shadow: 0 4px 24px rgba(255,55,95,0.35);
+  }
+  .btn-primary:hover { background: var(--red2); transform: scale(1.03); box-shadow: 0 8px 32px rgba(255,55,95,0.5); }
+  .btn-secondary {
+    background: var(--bg2);
+    color: var(--txt);
+    padding: 15px 32px;
+    border-radius: 99px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--bd2);
+    transition: background 0.16s, transform 0.12s;
+  }
+  .btn-secondary:hover { background: var(--bg3); transform: scale(1.03); }
+
+  /* ── STATS ── */
+  .stats {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.6s 0.5s both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--txt);
+  }
+  .stat-num span { color: var(--red); }
+  .stat-label { font-size: 0.8rem; color: var(--txt3); font-weight: 500; margin-top: 2px; }
+
+  /* ── FEATURES ── */
+  section { padding: 100px 5%; }
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    font-size: 1.05rem;
+    color: var(--txt2);
+    max-width: 520px;
+    line-height: 1.65;
+    margin-bottom: 60px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .feature-card {
+    background: var(--bg1);
+    border: 1px solid var(--bd);
+    border-radius: 22px;
+    padding: 32px 28px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .feature-card:hover { border-color: var(--bd2); transform: translateY(-3px); }
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    background: rgba(255,55,95,0.1);
+    border: 1px solid rgba(255,55,95,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  .feature-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+    color: var(--txt);
+  }
+  .feature-card p { font-size: 0.9rem; color: var(--txt2); line-height: 1.65; }
+
+  /* ── MOCKUP SECTION ── */
+  .mockup-section {
+    background: var(--bg1);
+    border-top: 1px solid var(--bd);
+    border-bottom: 1px solid var(--bd);
+    padding: 100px 5%;
+    display: flex;
+    align-items: center;
+    gap: 80px;
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .mockup-text { flex: 1; min-width: 280px; }
+  .mockup-text h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+  .mockup-text p { font-size: 1rem; color: var(--txt2); line-height: 1.7; margin-bottom: 32px; }
+  .mockup-visual {
+    flex: 1;
+    min-width: 280px;
+    background: var(--bg2);
+    border: 1px solid var(--bd2);
+    border-radius: 22px;
+    padding: 28px;
+    max-width: 480px;
+  }
+  .mock-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--bd);
+  }
+  .mock-row:last-child { border-bottom: none; }
+  .mock-label { font-size: 0.82rem; color: var(--txt3); font-weight: 500; }
+  .mock-val { font-size: 0.9rem; font-weight: 700; color: var(--txt); }
+  .mock-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: rgba(255,55,95,0.12);
+    color: var(--red);
+    border: 1px solid rgba(255,55,95,0.2);
+  }
+  .mock-header {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--txt3);
+    margin-bottom: 18px;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .step {
+    background: var(--bg1);
+    border: 1px solid var(--bd);
+    border-radius: 22px;
+    padding: 32px 28px;
+    position: relative;
+  }
+  .step-num {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    color: rgba(255,55,95,0.15);
+    margin-bottom: 16px;
+    line-height: 1;
+  }
+  .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; color: var(--txt); }
+  .step p { font-size: 0.88rem; color: var(--txt2); line-height: 1.65; }
+
+  /* ── CTA ── */
+  .cta-section {
+    text-align: center;
+    padding: 120px 5%;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-glow {
+    position: absolute;
+    width: 600px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255,55,95,0.1) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .cta-section h2 {
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    margin-bottom: 18px;
+    line-height: 1.05;
+  }
+  .cta-section h2 em { color: var(--red); font-style: normal; }
+  .cta-section p { font-size: 1.05rem; color: var(--txt2); margin-bottom: 44px; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+  /* ── WAITLIST ── */
+  .waitlist-form {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .waitlist-form input {
+    flex: 1;
+    min-width: 220px;
+    background: var(--bg2);
+    border: 1px solid var(--bd2);
+    border-radius: 99px;
+    padding: 14px 22px;
+    font-size: 0.93rem;
+    font-family: var(--font);
+    color: var(--txt);
+    outline: none;
+    transition: border-color 0.16s;
+  }
+  .waitlist-form input::placeholder { color: var(--txt3); }
+  .waitlist-form input:focus { border-color: var(--red); }
+  .waitlist-form button {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 99px;
+    padding: 14px 28px;
+    font-size: 0.93rem;
+    font-weight: 700;
+    font-family: var(--font);
+    cursor: pointer;
+    transition: background 0.16s, transform 0.12s;
+    box-shadow: 0 4px 20px rgba(255,55,95,0.35);
+  }
+  .waitlist-form button:hover { background: var(--red2); transform: scale(1.03); }
+  .waitlist-note { font-size: 0.78rem; color: var(--txt3); margin-top: 16px; }
+  .success-msg {
+    display: none;
+    color: #30d158;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: 16px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--bd);
+    padding: 40px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer p { font-size: 0.82rem; color: var(--txt3); }
+  .footer-logo {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--txt);
+    letter-spacing: -0.03em;
+  }
+  .footer-logo span { color: var(--red); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 640px) {
+    nav { padding: 0 4%; }
+    .nav-links { display: none; }
+    .hero-btns { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+    .stats { gap: 28px; }
+    .mockup-section { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">🔥 Fit<span>Core</span></a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#waitlist" class="nav-cta">Get Early Access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">Free · No subscription · Built for everyone</div>
+  <h1>Your fitness,<br><em>your way.</em></h1>
+  <p class="hero-sub">FitCore is the free all-in-one fitness companion. Track workouts, log nutrition, get AI coaching, and monitor your progress — no paywall, ever.</p>
+  <div class="hero-btns">
+    <a href="YOUR_STREAMLIT_URL_HERE" target="_blank" class="btn-primary">Launch App — It's Free</a>
+    <a href="#features" class="btn-secondary">See Features</a>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">900<span>k+</span></div>
+      <div class="stat-label">Foods in database</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">50<span>+</span></div>
+      <div class="stat-label">Exercises tracked</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span>$</span>0</div>
+      <div class="stat-label">Forever free</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="text-align:center">
+  <div style="max-width:1100px;margin:0 auto">
+    <p class="section-label reveal">Everything you need</p>
+    <h2 class="section-title reveal">Replace your fitness apps.<br>All of them.</h2>
+    <p class="section-sub reveal" style="margin:0 auto 60px">Apple Fitness costs $9.99/month. MyFitnessPal costs $19.99/month. FitCore is free — and does more.</p>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">💪</div>
+        <h3>Exercise Finder</h3>
+        <p>Filter 50+ exercises by muscle group, equipment, difficulty, and calories burned. Find the perfect workout for your setup in seconds.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🤖</div>
+        <h3>AI Nutrition Coach</h3>
+        <p>Ask anything — how many calories you need, best foods for your goals, macro breakdowns. Powered by AI, available 24/7.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🥗</div>
+        <h3>Nutrition Database</h3>
+        <p>Search over 900,000 foods and get instant macros, calorie counts, fat, protein, and carb data for anything you eat.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">📊</div>
+        <h3>Progress Tracker</h3>
+        <p>Log your weight, daily steps, and sleep every day. Watch your trends over time with a beautiful chart that shows your journey.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure Accounts</h3>
+        <p>Your data is yours. Create a private account with encrypted passwords and access your history from any device, anytime.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">⚡</div>
+        <h3>Fast & Lightweight</h3>
+        <p>No bloated app to download. FitCore runs in your browser, loads instantly, and works on any device — phone, tablet, or desktop.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOCKUP SECTION -->
+<div class="mockup-section">
+  <div class="mockup-text reveal">
+    <p class="section-label">Progress Tracker</p>
+    <h2>See your <em style="color:var(--red);font-style:normal">progress</em><br>every day.</h2>
+    <p>Log your weight, steps, and sleep in seconds. FitCore automatically charts your journey so you always know how far you've come.</p>
+    <a href="YOUR_STREAMLIT_URL_HERE" target="_blank" class="btn-primary" style="display:inline-block">Start Tracking Free</a>
+  </div>
+  <div class="mockup-visual reveal">
+    <div class="mock-header">📊 Progress Log</div>
+    <div class="mock-row">
+      <span class="mock-label">Apr 19</span>
+      <span class="mock-val">172.4 lbs</span>
+      <span class="mock-badge">8,432 steps</span>
+    </div>
+    <div class="mock-row">
+      <span class="mock-label">Apr 18</span>
+      <span class="mock-val">173.1 lbs</span>
+      <span class="mock-badge">6,201 steps</span>
+    </div>
+    <div class="mock-row">
+      <span class="mock-label">Apr 17</span>
+      <span class="mock-val">173.8 lbs</span>
+      <span class="mock-badge">10,540 steps</span>
+    </div>
+    <div class="mock-row">
+      <span class="mock-label">Apr 16</span>
+      <span class="mock-val">174.2 lbs</span>
+      <span class="mock-badge">7,890 steps</span>
+    </div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--bd)">
+      <div style="font-size:0.72rem;color:var(--txt3);font-weight:600;margin-bottom:10px">WEIGHT TREND</div>
+      <svg viewBox="0 0 380 80" width="100%" style="overflow:visible">
+        <polyline points="10,65 100,52 190,40 280,28 370,18" fill="none" stroke="#ff375f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="10,65 100,52 190,40 280,28 370,18 370,80 10,80" fill="rgba(255,55,95,0.08)" stroke="none"/>
+        <circle cx="10" cy="65" r="4" fill="#ff375f"/>
+        <circle cx="100" cy="52" r="4" fill="#ff375f"/>
+        <circle cx="190" cy="40" r="4" fill="#ff375f"/>
+        <circle cx="280" cy="28" r="4" fill="#ff375f"/>
+        <circle cx="370" cy="18" r="4" fill="#ff375f"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how" style="text-align:center">
+  <div style="max-width:1100px;margin:0 auto">
+    <p class="section-label reveal">Simple by design</p>
+    <h2 class="section-title reveal">Up and running<br>in 30 seconds.</h2>
+    <p class="section-sub reveal" style="margin:0 auto 60px">No app to download, no credit card, no setup. Just open and go.</p>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <h3>Create your account</h3>
+        <p>Sign up with just an email and password. Your data is private and encrypted.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <h3>Find your workouts</h3>
+        <p>Filter exercises by what you have at home, your target muscles, and how hard you want to push.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <h3>Track your nutrition</h3>
+        <p>Search any food, get the macros, ask the AI coach anything about your diet and goals.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">04</div>
+        <h3>Log daily progress</h3>
+        <p>30 seconds a day to log your weight, steps, and sleep. Watch your trend line go in the right direction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / WAITLIST -->
+<section id="waitlist" class="cta-section">
+  <div class="cta-glow"></div>
+  <p class="section-label reveal">Mobile app coming soon</p>
+  <h2 class="reveal">Ready to get<br><em>seriously fit?</em></h2>
+  <p class="reveal">Join the waitlist for the FitCore mobile app — and use the web app free right now.</p>
+  <div class="reveal">
+    <form class="waitlist-form" onsubmit="handleWaitlist(event)">
+      <input type="email" placeholder="your@email.com" id="waitlist-email" required />
+      <button type="submit">Join Waitlist</button>
+    </form>
+    <p class="waitlist-note">No spam. Ever. Just a ping when the app drops.</p>
+    <p class="success-msg" id="success-msg">🎉 You're on the list! We'll be in touch.</p>
+  </div>
+  <div style="margin-top:52px" class="reveal">
+    <a href="YOUR_STREAMLIT_URL_HERE" target="_blank" class="btn-secondary" style="font-size:1rem;padding:16px 36px">Launch Web App — Free →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">🔥 Fit<span>Core</span></div>
+  <p>Built for everyone. Free forever.</p>
+  <p style="color:rgba(255,255,255,0.2)">© 2026 FitCore</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  function handleWaitlist(e) {
+    e.preventDefault();
+    const email = document.getElementById('waitlist-email').value;
+    document.querySelector('.waitlist-form').style.display = 'none';
+    document.querySelector('.waitlist-note').style.display = 'none';
+    document.getElementById('success-msg').style.display = 'block';
+    console.log('Waitlist signup:', email);
+  }
+</script>
+
+</body>
+</html>
